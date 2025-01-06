@@ -7,6 +7,7 @@ import { IncomeTypesModule } from "./incomeTypes/incomeTypes.module";
 import { UsersModule } from "./users/users.module";
 import { AuthModule } from "./auth/auth.module";
 import { IncomesModule } from "./incomes/incomes.module";
+import { ExpensesModule } from "./expenses/expenses.module";
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { IncomesModule } from "./incomes/incomes.module";
     UsersModule,
     AuthModule,
     IncomesModule,
+    ExpensesModule,
   ],
   controllers: [],
   providers: [],

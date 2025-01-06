@@ -11,6 +11,6 @@ export class ExpenseType {
   @Column({ nullable: false })
   type: string;
 
-  @OneToMany(() => Expense, (expense) => expense.expenseType)
+  @OneToMany(() => Expense, (expense) => expense.expense_Type)
   expenses: Expense[];
 }

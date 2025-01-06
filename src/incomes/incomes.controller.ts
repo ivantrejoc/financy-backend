@@ -2,8 +2,11 @@ import {
   Body,
   Controller,
   Get,
-  Param,
+  HttpException,
+  HttpStatus,
+  ParseUUIDPipe,
   Post,
+  Query,
   Req,
   UseInterceptors,
 } from "@nestjs/common";
@@ -16,16 +19,24 @@ export class IncomesController {
   constructor(private readonly incomesService: IncomesService) {}
 
   @Get()
-  async getIncomes() {
-    const incomes = await this.incomesService.getIncomes();
-    return incomes;
+  async getIncomes(
+    @Query("userId", new ParseUUIDPipe({ version: "4" })) userId?: string
+  ) {
+    if (userId) {
+      console.log("EL USER ID: ", userId);
+      const incomesById = await this.incomesService.getIncomesById(userId);
+      if (incomesById === "Not founded") {
+        throw new HttpException(
+          "User doesn't have incomes registered",
+          HttpStatus.NOT_FOUND
+        );
+      }
+      return incomesById;
+    }
+    const allIncomes = await this.incomesService.getIncomes();
+    return allIncomes;
   }
 
-  @Get(":userId")
-  async getIncomesById(@Param("userId") userId: string) {
-    const incomesById = await this.incomesService.getIncomesById(userId);
-    return incomesById;
-  }
   @Post()
   @UseInterceptors(DateAdderInterceptor)
   async createIncome(
