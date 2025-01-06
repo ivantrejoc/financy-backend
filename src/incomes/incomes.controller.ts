@@ -4,7 +4,6 @@ import {
   Get,
   HttpException,
   HttpStatus,
-  ParseUUIDPipe,
   Post,
   Query,
   Req,
@@ -13,17 +12,16 @@ import {
 import { IncomesService } from "./incomes.service";
 import { IncomesDto } from "src/dtos/incomes.dto";
 import { DateAdderInterceptor } from "src/interceptors/dateAdder.interceptor";
+import { GetIncomesQueryDto } from "src/dtos/getIncomesQuery.dto";
 
 @Controller("incomes")
 export class IncomesController {
   constructor(private readonly incomesService: IncomesService) {}
 
   @Get()
-  async getIncomes(
-    @Query("userId", new ParseUUIDPipe({ version: "4" })) userId?: string
-  ) {
+  async getIncomes(@Query() query: GetIncomesQueryDto) {
+    const { userId } = query;
     if (userId) {
-      console.log("EL USER ID: ", userId);
       const incomesById = await this.incomesService.getIncomesById(userId);
       if (incomesById === "Not founded") {
         throw new HttpException(
@@ -34,6 +32,9 @@ export class IncomesController {
       return incomesById;
     }
     const allIncomes = await this.incomesService.getIncomes();
+    if (allIncomes === "Not founded") {
+      throw new HttpException("Not incomes registered", HttpStatus.NOT_FOUND);
+    }
     return allIncomes;
   }
 

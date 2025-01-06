@@ -18,6 +18,10 @@ export class IncomesService {
 
   async getIncomes() {
     const incomes = await this.incomeRepository.find();
+    if (incomes.length <= 0) {
+      return "Not founded";
+    }
+
     const cleanIncomes = incomes.map((income) => {
       return {
         id: income.id,
