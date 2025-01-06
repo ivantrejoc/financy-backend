@@ -10,16 +10,47 @@ export class ExpensesService {
     private readonly expenseRepository: Repository<Expense>
   ) {}
 
-  createExpense() {
-    return "Expense Created";
+  async createExpense(expense: Omit<Expense, "id" | "user" | "expense_Type">) {
+    const newExpense = this.expenseRepository.create(expense);
+    const savedExpense = await this.expenseRepository.save(newExpense);
+    return savedExpense;
   }
 
-  getExpensesById(userId: string) {
-    console.log("El user ID: ", userId);
-    return "EXPENSES BY ID" + userId;
+  async getExpensesById(userId: string) {
+    const expenses = await this.expenseRepository.findBy({
+      userId,
+    });
+    if (expenses.length <= 0) {
+      return "Not founded";
+    }
+    const cleanExpensesById = expenses.map((expense) => {
+      return {
+        id: expense.id,
+        concept: expense.concept,
+        amount: expense.amount,
+        date: expense.createdAt,
+        userId: expense.userId,
+        expenseType: expense.expenseTypeId,
+      };
+    });
+    return cleanExpensesById;
   }
 
-  getExpenses() {
-    return "ALL EXPENSES";
+  async getExpenses() {
+    const expenses = await this.expenseRepository.find();
+    if (expenses.length <= 0) {
+      return "Not founded";
+    }
+    const cleanExpenses = expenses.map((expense) => {
+      return {
+        id: expense.id,
+        concept: expense.concept,
+        amount: expense.amount,
+        date: expense.createdAt,
+        userId: expense.userId,
+        expenseType: expense.expenseTypeId,
+      };
+    });
+    return cleanExpenses;
   }
 }

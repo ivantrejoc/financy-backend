@@ -10,9 +10,9 @@ export class IncomesService {
     private readonly incomeRepository: Repository<Income>
   ) {}
 
-  createIncome(income: Omit<Income, "id" | "user" | "income_type">) {
+  async createIncome(income: Omit<Income, "id" | "user" | "income_type">) {
     const newIncome = this.incomeRepository.create(income);
-    const savedIncome = this.incomeRepository.save(newIncome);
+    const savedIncome = await this.incomeRepository.save(newIncome);
     return savedIncome;
   }
 
@@ -40,7 +40,7 @@ export class IncomesService {
     if (incomes.length <= 0) {
       return "Not founded";
     }
-    const cleanIncomes = incomes.map((income) => {
+    const cleanIncomesById = incomes.map((income) => {
       return {
         id: income.id,
         concept: income.concept,
@@ -50,6 +50,6 @@ export class IncomesService {
         incomeType: income.incomeTypeId,
       };
     });
-    return cleanIncomes;
+    return cleanIncomesById;
   }
 }

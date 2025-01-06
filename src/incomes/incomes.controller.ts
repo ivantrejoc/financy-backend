@@ -12,14 +12,14 @@ import {
 import { IncomesService } from "./incomes.service";
 import { IncomesDto } from "src/dtos/incomes.dto";
 import { DateAdderInterceptor } from "src/interceptors/dateAdder.interceptor";
-import { GetIncomesQueryDto } from "src/dtos/getIncomesQuery.dto";
+import { userIdDto } from "src/dtos/userId.dto";
 
 @Controller("incomes")
 export class IncomesController {
   constructor(private readonly incomesService: IncomesService) {}
 
   @Get()
-  async getIncomes(@Query() query: GetIncomesQueryDto) {
+  async getIncomes(@Query() query: userIdDto) {
     const { userId } = query;
     if (userId) {
       const incomesById = await this.incomesService.getIncomesById(userId);
